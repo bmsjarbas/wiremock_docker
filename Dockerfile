@@ -39,7 +39,7 @@ RUN set -x \
 	&& apt-get update \
 	&& apt-get install -y \
 		openjdk-8-jre-headless="$JAVA_DEBIAN_VERSION" \
-		ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" git \
+		ca-certificates-java="$CA_CERTIFICATES_JAVA_VERSION" git nginx \
 	&& rm -rf /var/lib/apt/lists/* \
 	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
@@ -50,6 +50,8 @@ RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 #   improved, please open an issue or a pull request so we can discuss it!
 RUN wget https://repo1.maven.org/maven2/by/stub/stubby4j/3.3.0/stubby4j-3.3.0.jar
 RUN git clone https://github.com/randomjs/stubby4j_yaml yamls
-EXPOSE 8882 8889
+RUN service nginx start
+EXPOSE 8882 8889 80
 COPY ./run.sh /
 ENTRYPOINT ["/run.sh"]
+CMD["hello.yaml"]
